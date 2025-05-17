@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gym Membership Management </title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --danger: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary);
+        }
+
+        .btn-danger {
+            background-color: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #d1146a;
+        }
+
+        .btn-success {
+            background-color: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background-color: #3ab7d8;
+        }
+
+        /* Member List Styles */
+        .member-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            position: relative;
+        }
+
+        .member-card h3 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+
+        .member-card ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        .member-card li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .member-card li i {
+            margin-right: 10px;
+            color: var(--gray);
+            width: 20px;
+            text-align: center;
+        }
+
+        .status-active {
+            color: #2ecc71;
+        }
+
+        .status-expired {
+            color: #e74c3c;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* Update Form Styles */
+        .update-form {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 15px;
+            border: 1px solid var(--light-gray);
+        }
+
+        .update-form .form-group {
+            margin-bottom: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .member-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .member-card {
+            animation: fadeIn 0.5s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2 class="form-title">Gym Membership Management </h2>
+            <form action="/add-Members" method="POST">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" name="name" id="name" placeholder="Enter member name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="Payment">Payment</label>
+                    <input type="number" name="Payment" id="Payment" placeholder="Enter payment amount" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="status">Status</label>
+                    <select name="status" id="status" required>
+                        <option value="active">Active</option>
+                        <option value="expired">Expired</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="classes">Class Group</label>
+                    <select name="classes" id="classes" required>
+                        <option value="Group-JS1">Group-JS1</option>
+                        <option value="Group-JS2">Group-JS2</option>
+                        <option value="Group-JS3">Group-JS3</option>
+                        <option value="Group-JS4">Group-JS4</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="personal">Training Type</label>
+                    <select name="personal" id="personal" required>
+                        <option value="personal-choose1">One-on-One Personal Training</option>
+                        <option value="personal-choose2">Small Group Personal Training</option>
+                        <option value="personal-choose3">Online Personal Training</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Add Member</button>
+            </form>
+        </div>
+
+        <% if (result && result.length> 0) { %>
+            <h2>Member List</h2>
+            <div class="member-list">
+                <% result.forEach(item=> { %>
+                    <div class="member-card">
+                        <h3><%= item.name %></h3>
+                        <ul>
+                            <li><i class="fas fa-id-card"></i> ID: <%= item.id %></li>
+                            <li><i class="fas fa-money-bill-wave"></i> Payment: $<%= item.Payment %></li>
+                            <li>
+                                <i class="fas fa-circle <%= item.status===1 || item.status===true ? 'status-active' : 'status-expired' %>"></i> 
+                                Status: <%= item.status===1 || item.status===true ? 'Active' : 'Expired' %>
+                            </li>
+                            <li><i class="fas fa-users"></i> Class: <%= item.classes %></li>
+                            <li><i class="fas fa-dumbbell"></i> Type: 
+                                <% if (item.type === "One-on-One Personal Training") { %>
+                                    <span>One-on-One</span>
+                                <% } else if (item.type === "Small Group Personal Training") { %>
+                                    <span>Small Group</span>
+                                <% } else { %>
+                                    <span>Online</span>
+                                <% } %>
+                            </li>
+                        </ul>
+                        
+                        <div class="action-buttons">
+                            <form action="/Delete/<%= item.id %>" method="post">
+                                <button type="submit" class="btn btn-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </form>
+                            
+                            <button id="show-<%= item.id %>" class="btn btn-success">
+                                <i class="fas fa-edit"></i> Update
+                            </button>
+                        </div>
+                        
+                        <!-- Update Form (hidden by default) -->
+                        <form method="PUT" id="form-<%= item.id %>" class="update-form" style="display: none;">
+                            <div class="form-group">
+                                <label for="name-<%= item.id %>">Name</label>
+                                <input type="text" name="name" id="name-<%= item.id %>" 
+                                       value="<%= item.name %>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="Payment-<%= item.id %>">Payment</label>
+                                <input type="number" name="Payment" id="Payment-<%= item.id %>" 
+                                       value="<%= item.Payment %>" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="status-<%= item.id %>">Status</label>
+                                <select name="status" id="status-<%= item.id %>" required>
+                                    <option value="active" <%=item.status===1 ? "selected" : "" %>>Active</option>
+                                    <option value="expired" <%=item.status===0 ? "selected" : "" %>>Expired</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="classes-<%= item.id %>">Class Group</label>
+                                <select name="classes" id="classes-<%= item.id %>" required>
+                                    <option value="Group-JS1" <%=item.classes==="Group-JS1" ? "selected" : "" %>>Group-JS1</option>
+                                    <option value="Group-JS2" <%=item.classes==="Group-JS2" ? "selected" : "" %>>Group-JS2</option>
+                                    <option value="Group-JS3" <%=item.classes==="Group-JS3" ? "selected" : "" %>>Group-JS3</option>
+                                    <option value="Group-JS4" <%=item.classes==="Group-JS4" ? "selected" : "" %>>Group-JS4</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="personal-<%= item.id %>">Training Type</label>
+                                <select name="personal" id="personal-<%= item.id %>" required>
+                                    <option value="personal-choose1" <%=item.type==="One-on-One Personal Training" ? "selected" : "" %>>One-on-One Personal Training</option>
+                                    <option value="personal-choose2" <%=item.type==="Small Group Personal Training" ? "selected" : "" %>>Small Group Personal Training</option>
+                                    <option value="personal-choose3" <%=item.type==="Online Personal Training" ? "selected" : "" %>>Online Personal Training</option>
+                                </select>
+                            </div>
+                            
+                            <button type="button" onclick="update('<%= item.id %>')" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                        
+                        <script>
+                            document.getElementById("show-<%= item.id %>").addEventListener("click", () => {
+                                const form = document.getElementById("form-<%= item.id %>");
+                                const btn = document.getElementById("show-<%= item.id %>");
+                                
+                                if (form.style.display === "none") {
+                                    form.style.display = "block";
+                                    btn.innerHTML = '<i class="fas fa-times"></i> Cancel';
+                                    btn.classList.remove('btn-success');
+                                    btn.classList.add('btn-danger');
+                                } else {
+                                    form.style.display = "none";
+                                    btn.innerHTML = '<i class="fas fa-edit"></i> Update';
+                                    btn.classList.remove('btn-danger');
+                                    btn.classList.add('btn-success');
+                                }
+                            });
+                        </script>
+                    </div>
+                <% }) %>
+            </div>
+        <% } else { %>
+            <div class="no-members">
+                <i class="fas fa-users-slash" style="font-size: 48px; color: var(--gray);"></i>
+                <h2>No Members Found</h2>
+                <p>Add your first member using the form above</p>
+            </div>
+        <% } %>
+    </div>
+
+    <script>
+        function update(id) {
+            const name = document.getElementById(`name-${id}`).value.trim();
+            const Payment = document.getElementById(`Payment-${id}`).value.trim();
+            const status = document.getElementById(`status-${id}`).value.trim();
+            const classes = document.getElementById(`classes-${id}`).value.trim();
+            const personal = document.getElementById(`personal-${id}`).value.trim();
+            
+            fetch(`update/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ name, Payment, status, classes, personal })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert('Member updated successfully!');
+                window.location.reload(); 
+            })
+            .catch(err => {
+                console.error("Error:", err);
+                alert('Error updating member. Please try again.');
+            });
+        }
+    </script>
+</body>
+</html>
