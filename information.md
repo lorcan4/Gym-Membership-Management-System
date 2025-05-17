@@ -60,4 +60,4 @@ const connection = mysql.createConnection({
 │   └── information.md          
 
 ### 🧾 Member Form Page
-![Form Page](./Gym.png)
+![Form Page](Gym.png)
